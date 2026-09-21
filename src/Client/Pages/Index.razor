@@ -121,9 +121,9 @@
     private string title = string.Empty;
     private string description = string.Empty;
     private DateTime? startDate;
-    private int durationHours;
-    private int lessonCount;
-    private int lessonDurationHours;
+    private int durationHours = 1;
+    private int lessonCount = 1;
+    private int lessonDurationHours = 1;
     private string? errorMessage;
     private string? successMessage;
     private bool isLoading = true;
@@ -258,8 +258,8 @@
         title = string.Empty;
         description = string.Empty;
         startDate = null;
-        durationHours = 0;
-        lessonCount = 0;
-        lessonDurationHours = 0;
+        durationHours = 1;
+        lessonCount = 1;
+        lessonDurationHours = 1;
     }
 }
