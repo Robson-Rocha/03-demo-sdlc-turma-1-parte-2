@@ -29,7 +29,9 @@ public sealed class TrainingListingTests
             "Fundamentos de C#",
             "Introdução ao C#",
             "2026-09-15",
-            8);
+            8,
+            2,
+            4);
 
         var creationResponse = await client.PostAsJsonAsync("/api/trainings", request);
         var listingResponse = await client.GetAsync("/api/trainings");
@@ -43,5 +45,7 @@ public sealed class TrainingListingTests
         Assert.Equal(request.Description, training.Description);
         Assert.Equal(DateOnly.Parse(request.StartDate!), training.StartDate);
         Assert.Equal(request.DurationHours, training.DurationHours);
+        Assert.Equal(request.LessonCount, training.LessonCount);
+        Assert.Equal(request.LessonDurationHours, training.LessonDurationHours);
     }
 }

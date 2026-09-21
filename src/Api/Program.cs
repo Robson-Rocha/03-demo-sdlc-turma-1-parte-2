@@ -60,6 +60,24 @@ app.MapPost("/api/trainings", async (CreateTrainingRequest request, TrainingCata
 		errors["durationHours"] = ["A carga horária deve ser maior que zero."];
 	}
 
+	if (request.LessonCount <= 0)
+	{
+		errors["lessonCount"] = ["A quantidade de aulas deve ser maior que zero."];
+	}
+
+	if (request.LessonDurationHours <= 0 || request.LessonDurationHours > 4)
+	{
+		errors["lessonDurationHours"] = ["A duração de cada aula deve ser maior que zero e menor ou igual a quatro horas."];
+	}
+
+	if (request.LessonCount > 0 &&
+		request.LessonDurationHours > 0 &&
+		request.LessonDurationHours <= 4 &&
+		(long)request.LessonCount * request.LessonDurationHours > request.DurationHours)
+	{
+		errors["lessonDurationHours"] = ["A soma da duração das aulas não pode exceder a carga horária total do treinamento."];
+	}
+
 	if (errors.Count > 0)
 	{
 		return Results.BadRequest(new { errors });
@@ -71,7 +89,9 @@ app.MapPost("/api/trainings", async (CreateTrainingRequest request, TrainingCata
 		Title = request.Title!,
 		Description = request.Description!,
 		StartDate = startDate,
-		DurationHours = request.DurationHours
+		DurationHours = request.DurationHours,
+		LessonCount = request.LessonCount,
+		LessonDurationHours = request.LessonDurationHours
 	};
 
 	dbContext.Trainings.Add(training);
@@ -244,6 +264,24 @@ app.MapPut("/api/trainings/{id:guid}", async (Guid id, CreateTrainingRequest req
 		errors["durationHours"] = ["A carga horária deve ser maior que zero."];
 	}
 
+	if (request.LessonCount <= 0)
+	{
+		errors["lessonCount"] = ["A quantidade de aulas deve ser maior que zero."];
+	}
+
+	if (request.LessonDurationHours <= 0 || request.LessonDurationHours > 4)
+	{
+		errors["lessonDurationHours"] = ["A duração de cada aula deve ser maior que zero e menor ou igual a quatro horas."];
+	}
+
+	if (request.LessonCount > 0 &&
+		request.LessonDurationHours > 0 &&
+		request.LessonDurationHours <= 4 &&
+		(long)request.LessonCount * request.LessonDurationHours > request.DurationHours)
+	{
+		errors["lessonDurationHours"] = ["A soma da duração das aulas não pode exceder a carga horária total do treinamento."];
+	}
+
 	if (errors.Count > 0)
 	{
 		return Results.BadRequest(new { errors });
@@ -260,6 +298,8 @@ app.MapPut("/api/trainings/{id:guid}", async (Guid id, CreateTrainingRequest req
 	training.Description = request.Description!;
 	training.StartDate = startDate;
 	training.DurationHours = request.DurationHours;
+	training.LessonCount = request.LessonCount;
+	training.LessonDurationHours = request.LessonDurationHours;
 
 	try
 	{

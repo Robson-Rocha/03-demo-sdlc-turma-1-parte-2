@@ -4,14 +4,18 @@ public sealed record CreateTrainingRequest(
     string? Title,
     string? Description,
     string? StartDate,
-    int DurationHours);
+    int DurationHours,
+    int LessonCount,
+    int LessonDurationHours);
 
 public sealed record Training(
     Guid Id,
     string Title,
     string Description,
     DateOnly StartDate,
-    int DurationHours);
+    int DurationHours,
+    int LessonCount,
+    int LessonDurationHours);
 
 public sealed record CreateAttendeeRequest(
     string? FirstName,

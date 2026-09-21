@@ -32,6 +32,15 @@
                             </MudItem>
                         </MudGrid>
 
+                        <MudGrid Spacing="2">
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="lessonCount" Label="Quantidade de aulas" Variant="Variant.Outlined" Margin="Margin.Dense" Min="1" Required="true" RequiredError="A quantidade de aulas deve ser maior que zero." Error='@HasFieldError("lessonCount")' ErrorText='@GetFieldError("lessonCount")' Disabled="@isSubmitting" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudNumericField @bind-Value="lessonDurationHours" Label="Duração por aula" Variant="Variant.Outlined" Margin="Margin.Dense" Min="1" Max="4" Required="true" RequiredError="A duração de cada aula deve ser maior que zero e menor ou igual a quatro horas." Error='@HasFieldError("lessonDurationHours")' ErrorText='@GetFieldError("lessonDurationHours")' Disabled="@isSubmitting" />
+                            </MudItem>
+                        </MudGrid>
+
                         @if (!string.IsNullOrWhiteSpace(errorMessage))
                         {
                             <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true">@errorMessage</MudAlert>
@@ -90,6 +99,8 @@
                                 <div class="training-meta">
                                     <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Icon="@Icons.Material.Outlined.Event">@training.StartDate.ToString("dd/MM/yyyy")</MudChip>
                                     <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Icon="@Icons.Material.Outlined.Schedule">@training.DurationHours h</MudChip>
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Icon="@Icons.Material.Outlined.FormatListNumbered">@training.LessonCount aulas</MudChip>
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Icon="@Icons.Material.Outlined.Timer">@training.LessonDurationHours h/aula</MudChip>
                                 </div>
                                 <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Outlined.Groups" Href="@($"/trainings/{training.Id}/attendees")">
                                     Ver inscritos
@@ -111,6 +122,8 @@
     private string description = string.Empty;
     private DateTime? startDate;
     private int durationHours;
+    private int lessonCount;
+    private int lessonDurationHours;
     private string? errorMessage;
     private string? successMessage;
     private bool isLoading = true;
@@ -167,7 +180,9 @@
                 title,
                 description,
                 startDate?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-                durationHours);
+                durationHours,
+                lessonCount,
+                lessonDurationHours);
             using var response = await Http.PostAsJsonAsync("api/trainings", request);
 
             if (response.IsSuccessStatusCode)
@@ -244,5 +259,7 @@
         description = string.Empty;
         startDate = null;
         durationHours = 0;
+        lessonCount = 0;
+        lessonDurationHours = 0;
     }
 }
