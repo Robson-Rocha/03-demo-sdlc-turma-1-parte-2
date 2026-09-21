@@ -23,6 +23,12 @@ namespace TrainingCatalog.Infrastructure.Migrations
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 1);
+
+            migrationBuilder.Sql("""
+                UPDATE "Trainings"
+                SET "LessonCount" = "DurationHours",
+                    "LessonDurationHours" = 1;
+                """);
         }
 
         /// <inheritdoc />

@@ -8,7 +8,7 @@ namespace TrainingCatalog.Api.Tests;
 public sealed class TrainingCreationTests
 {
     [Fact]
-    public async Task ReturnsCreatedWhenLessonsFitWithinTotalDuration()
+    public async Task ReturnsCreatedWhenTotalDurationExceedsFourButEachLessonIsAtMostFourHours()
     {
         using var factory = new TrainingCatalogApiFactory();
         using var client = factory.CreateClient();
@@ -25,6 +25,7 @@ public sealed class TrainingCreationTests
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var training = await response.Content.ReadFromJsonAsync<Training>();
         Assert.NotNull(training);
+        Assert.True(training.DurationHours > 4);
         Assert.Equal(request.DurationHours, training.DurationHours);
         Assert.Equal(request.LessonCount, training.LessonCount);
         Assert.Equal(request.LessonDurationHours, training.LessonDurationHours);
