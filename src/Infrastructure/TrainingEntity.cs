@@ -16,5 +16,9 @@ public sealed class TrainingEntity
 
     public int DurationHours { get; set; }
 
-    public Training ToTraining() => new(Id, Title, Description, StartDate, DurationHours);
+    public int LessonCount { get; set; }
+
+    public int LessonDurationHours { get; set; }
+
+    public Training ToTraining() => new(Id, Title, Description, StartDate, DurationHours, LessonCount, LessonDurationHours);
 }

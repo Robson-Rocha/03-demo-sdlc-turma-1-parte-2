@@ -4,7 +4,7 @@
 
 - Status: aprovado
 - Responsáveis: turma e instrutor
-- Última revisão: preencher ao versionar
+- Última revisão: 2026-09-21
 
 ## Objetivo
 
@@ -38,14 +38,18 @@ Operações adicionais de API podem ser implementadas depois com contratos expl�
 | `title` | texto | obrigatório e não vazio |
 | `description` | texto | obrigatório e não vazio |
 | `startDate` | data no formato `YYYY-MM-DD` | obrigatória e exclusiva no catálogo |
-| `durationHours` | inteiro | obrigatório e maior que zero |
+| `durationHours` | inteiro | obrigatório, maior que zero e representa a carga horária total do treinamento |
+| `lessonCount` | inteiro | obrigatório e maior que zero |
+| `lessonDurationHours` | inteiro | obrigatório, maior que zero e menor ou igual a quatro |
+
+Além das regras por campo, o catálogo deve rejeitar um treinamento quando `lessonCount × lessonDurationHours` for maior que `durationHours`.
 
 ## Contrato da API para criação
 
 ### Requisição
 
 - Método e rota: `POST /api/trainings`
-- Corpo: título, descrição, data de início e carga horária
+- Corpo: título, descrição, data de início, carga horária total, quantidade de aulas e duração uniforme de cada aula
 
 ### Sucesso
 
@@ -93,10 +97,13 @@ Operações adicionais de API podem ser implementadas depois com contratos expl�
 2. Dada uma descrição ausente, quando o cadastro for enviado, então a API retorna `400` e identifica o campo `description`.
 3. Dada uma data de início ausente, quando o cadastro for enviado, então a API retorna `400` e identifica o campo `startDate`.
 4. Dada uma carga horária igual ou inferior a zero, quando o cadastro for enviado, então a API retorna `400` e identifica o campo `durationHours`.
-5. Dados válidos produzem `201`, um identificador e um recurso consultável depois da criação.
-6. Pela interface, dados válidos produzem confirmação e o novo item aparece na lista.
-7. Pela interface, uma falha preserva os dados preenchidos e apresenta mensagem útil.
-8. Dado um treinamento já cadastrado para uma data de início, quando outro treinamento for enviado com a mesma `startDate`, então a API retorna `409` e identifica o campo `startDate`, sem armazenar o segundo treinamento.
+5. Dada uma quantidade de aulas igual ou inferior a zero, quando o cadastro for enviado, então a API retorna `400` e identifica o campo `lessonCount`.
+6. Dada uma duração de aula igual ou inferior a zero, ou superior a quatro horas, quando o cadastro for enviado, então a API retorna `400` e identifica o campo `lessonDurationHours`.
+7. Dado um treinamento cuja multiplicação entre `lessonCount` e `lessonDurationHours` excede `durationHours`, quando o cadastro for enviado, então a API retorna `400` sem armazenar o item.
+8. Dados válidos produzem `201`, um identificador e um recurso consultável depois da criação.
+9. Pela interface, dados válidos produzem confirmação e o novo item aparece na lista com carga horária total, quantidade de aulas e duração por aula.
+10. Pela interface, uma falha preserva os dados preenchidos e apresenta mensagem útil.
+11. Dado um treinamento já cadastrado para uma data de início, quando outro treinamento for enviado com a mesma `startDate`, então a API retorna `409` e identifica o campo `startDate`, sem armazenar o segundo treinamento.
 
 ## Evidências esperadas
 
@@ -104,6 +111,7 @@ Operações adicionais de API podem ser implementadas depois com contratos expl�
 | --- | --- |
 | validação de entrada | resposta HTTP e teste automatizado |
 | criação válida | resposta `201` e teste automatizado |
+| regra de aulas | resposta `400` e teste automatizado para excesso sobre `durationHours` e para duração por aula maior que quatro |
 | exclusividade da data | resposta `409` e teste automatizado confirmando que o segundo item não foi armazenado |
 | armazenamento | consulta bem-sucedida após reiniciar a API |
 | sucesso na interface | fluxo executado no navegador |
